@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/rpaskin/pymibot#readme",
   "dependencies": {
+    "dotenv": "^5.0.1",
+    "request": "^2.85.0",
     "telegraf": "^3.20.0"
   }
 }

@@ -1,79 +1,95 @@
+require('dotenv').config();
+
 if (!process.env.BOT_TOKEN) {
 	process.env.BOT_TOKEN = "MYTOKEN"
 }
 
+var request = require("request")
+
+var url = "https://tocerto.herokuapp.com/news.json"
+var news = []
+var news_keys = []
+var news_keyboard
+var markup_keyboard
+
 const Telegraf = require('telegraf')
+const Extra = require('telegraf/extra')
+const Markup = require('telegraf/markup')
+
+const keyboard = Markup.inlineKeyboard([
+  Markup.urlButton('❤️', 'http://telegraf.js.org'),
+  Markup.callbackButton('Delete', 'delete')
+])
+
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
-bot.start((ctx) => ctx.reply('Achou errado otário!'))
-bot.help((ctx) => ctx.reply('Send me a sticker'))
-bot.on('sticker', (ctx) => ctx.reply('👍'))
-bot.hears('hi', (ctx) => ctx.reply('Tá querendo o que?'))
-bot.hears(/buy/i, (ctx) => ctx.reply('Buy-buy'))
+request({
+    url: url,
+    json: true
+}, function (error, response, body) {
 
+    if (!error && response.statusCode === 200) {
+      // console.log(body) // Print the json response
+      news = body
+      console.log('Count of news items retrieved:', news.length)
+
+      var inline_kb = []
+      news.forEach(function(el, index) {
+
+      	inline_kb.push(Markup.callbackButton(el.headline, 'noticia:'+index))
+
+	    	news_keys.push([Markup.callbackButton(el.headline, 'noticia:'+index)])
+	    	// console.log(el.headline, 'noticia'+index)
+	    	// console.log(news_keys[index])
+  	  })
+
+
+		markup_keyboard = Extra
+		  .HTML()
+		  .markup((m) => m.inlineKeyboard(inline_kb, {columns: 1}))
+
+      news_keyboard = Markup.inlineKeyboard(news_keys)
+    }
+})
+
+bot.start((ctx) => {
+	ctx.reply('Já sei, um otário está errado!')
+	ctx.reply('Sobre o que ele/ela está falando 💩?')
+})
+
+bot.help((ctx) => ctx.reply('Help message'))
+
+// bot.command('inline', (ctx) => {
+//   return ctx.reply('<b>Coke</b> or <i>Pepsi?</i>', Extra.HTML().markup((m) =>
+//     m.inlineKeyboard([
+//       m.callbackButton('Coke', 'Coke'),
+//       m.callbackButton('Pepsi', 'Pepsi'),
+//       m.callbackButton('Pepsidjfvkjndfvnnjvnjkvnkjfd<br>kjdnvnfdkvndfk', 'Pepsidfnvkdjnvdnfndfkvnkdf')
+//     ])))
+// })
+
+bot.on('noticia', (ctx) => {
+	console.log(77, ctx)
+	// return ctx.reply('clicou noticia:', ctx.session.value)
+  // ctx.session.value = (ctx.session.value || 0) + ctx.state.amount
+  // return editText(ctx)
+})
+
+bot.on('message', (ctx) => {
+	ctx.reply('Esses são os assuntos do momento:')
+	// ctx.reply(Extra.markup(news_keyboard))
+	ctx.telegram.sendCopy(ctx.from.id, ctx.message, Extra.markup(news_keyboard))
+	console.log(47)
+})
+
+
+bot.command('inline', (ctx) => {
+  return ctx.reply('<b>Coke</b> or <i>Pepsi?</i>', Extra.HTML().markup((m) =>
+    m.inlineKeyboard([
+      m.callbackButton('Coke', 'Coke'),
+      m.callbackButton('Pepsi', 'Pepsi')
+    ])))
+})
+
+bot.action('delete', ({ deleteMessage }) => deleteMessage())
 bot.startPolling()
-
-// const Telegraf = require('telegraf')
-// const Router = require('telegraf/router')
-// const Extra = require('telegraf/extra')
-// const session = require('telegraf/session')
-
-// const markup = Extra
-//   .HTML()
-//   .markup((m) => m.inlineKeyboard([
-//     m.callbackButton('Add 1', 'add:1'),
-//     m.callbackButton('Add 10', 'add:10'),
-//     m.callbackButton('Add 100', 'add:100'),
-//     m.callbackButton('Subtract 1', 'sub:1'),
-//     m.callbackButton('Subtract 10', 'sub:10'),
-//     m.callbackButton('Subtract 100', 'sub:100'),
-//     m.callbackButton('🐈', Math.random().toString(36).slice(2)),
-//     m.callbackButton('Clear', 'clear')
-//   ], {columns: 3}))
-
-// const calculator = new Router(({ callbackQuery }) => {
-//   if (!callbackQuery.data) {
-//     return
-//   }
-//   const parts = callbackQuery.data.split(':')
-//   return {
-//     route: parts[0],
-//     state: {
-//       amount: parseInt(parts[1], 10) || 0
-//     }
-//   }
-// })
-
-// calculator.on('add', (ctx) => {
-//   ctx.session.value = (ctx.session.value || 0) + ctx.state.amount
-//   return editText(ctx)
-// })
-
-// calculator.on('sub', (ctx) => {
-//   ctx.session.value = (ctx.session.value || 0) - ctx.state.amount
-//   return editText(ctx)
-// })
-
-// calculator.on('clear', (ctx) => {
-//   ctx.session.value = 0
-//   return editText(ctx)
-// })
-
-// calculator.otherwise((ctx) => ctx.reply('🌯'))
-
-// function editText (ctx) {
-//   if (ctx.session.value === 42) {
-//     return ctx.answerCbQuery('Answer to the Ultimate Question of Life, the Universe, and Everything', true)
-//       .then(() => ctx.editMessageText('🎆'))
-//   }
-//   return ctx.editMessageText(`Value: <b>${ctx.session.value}</b>`, markup).catch(() => undefined)
-// }
-
-// const bot = new Telegraf(process.env.BOT_TOKEN)
-// bot.use(session({ ttl: 10 }))
-// bot.start((ctx) => {
-//   ctx.session.value = 0
-//   return ctx.reply(`Value: <b>${ctx.session.value}</b>`, markup)
-// })
-// bot.on('callback_query', calculator)
-// bot.startPolling()
