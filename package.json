@@ -1,0 +1,27 @@
+{
+  "name": "pymibot",
+  "version": "1.0.0",
+  "description": "PymiBot is a bot to solve news accuracy disputes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rpaskin/pymibot.git"
+  },
+  "keywords": [
+    "Chatbot",
+    "Telegram",
+    "News"
+  ],
+  "author": "Ronnie Paskin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rpaskin/pymibot/issues"
+  },
+  "homepage": "https://github.com/rpaskin/pymibot#readme",
+  "dependencies": {
+    "telegraf": "^3.20.0"
+  }
+}
