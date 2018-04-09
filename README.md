@@ -43,7 +43,7 @@ To use this project, follow these steps:
 4. Analog interactions through other chat platforms
 5. More...?
 
-We'd love to 
+We'd love to have contributors! Please contact us or fork the project and submit improvements!
 
 ## Credits
 
