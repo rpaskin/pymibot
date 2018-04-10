@@ -76,17 +76,13 @@ slimbot.on('callback_query', query => {
 			//     console.log(message.result);
 			//  });	
 
-		  slimbot.sendDocument(query.message.chat.id, 'CgADAQADKAADE7RhRtv0HT7eUf0nAg').then(message => {
-			    console.log(message.result);
-		  });	
+		  slimbot.sendDocument(query.message.chat.id, 'CgADAQADKAADE7RhRtv0HT7eUf0nAg').then(message => {});	
 		}
 		else {
 			slimbot.sendMessage(query.message.chat.id, "Errou feio! Você é um 💩. Ainda bem que vc não repassou esse 🤢, né?", { parse_mode: "HTML" });
 	
 			// let fileUpload = fs.createReadStream(__dirname + '/loser.gif');
-		  slimbot.sendDocument(query.message.chat.id, 'CgADAQADKQADE7RhRoBKy0qTeKwLAg').then(message => {
-			    console.log(message.result);
-		  });	
+		  slimbot.sendDocument(query.message.chat.id, 'CgADAQADKQADE7RhRoBKy0qTeKwLAg').then(message => {});	
 		}
 	}
 
